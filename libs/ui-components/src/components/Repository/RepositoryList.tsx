@@ -178,6 +178,7 @@ const RepositoryTable = () => {
           <ToolbarGroup>
             <ToolbarItem>
               <TableTextSearch value={nameSearch} setValue={setNameSearch} placeholder={t('Search by name')} />
+              
             </ToolbarItem>
           </ToolbarGroup>
           <ToolbarItem>
