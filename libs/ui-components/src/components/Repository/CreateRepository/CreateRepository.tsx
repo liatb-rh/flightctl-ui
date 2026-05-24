@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import {
   Alert,
@@ -16,6 +17,7 @@ import {
 import { Repository, ResourceSync, ResourceSyncList } from '@flightctl/types';
 
 import { useTranslation } from '../../../hooks/useTranslation';
+
 import { useFetch } from '../../../hooks/useFetch';
 import { Link, ROUTE, useNavigate } from '../../../hooks/useNavigate';
 import { useAppContext } from '../../../hooks/useAppContext';
@@ -35,6 +37,7 @@ const CreateRepository = () => {
   const { repositoryId } = useParams<{ repositoryId: string }>();
 
   const { get } = useFetch();
+  
   const [repoError, setRepoError] = React.useState<string>();
   const [rsError, setRsError] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(!!repositoryId);
@@ -43,12 +46,12 @@ const CreateRepository = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const fetchResources = async () => {
+    const fetchResources = async (id: string) => {
       setIsLoading(true);
       try {
         const results = await Promise.allSettled([
-          get<Repository>(`repositories/${repositoryId}`),
-          get<ResourceSyncList>(commonQueries.getResourceSyncsByRepo(repositoryId as string)),
+          get<Repository>(`repositories/${id}`),
+          get<ResourceSyncList>(commonQueries.getResourceSyncsByRepo({ repositoryId: id })),
         ]);
 
         if (isPromiseFulfilled(results[0])) {
@@ -66,16 +69,15 @@ const CreateRepository = () => {
       }
     };
     if (repositoryId) {
-      void fetchResources();
+      void fetchResources(repositoryId);
     }
   }, [get, repositoryId]);
 
   const reloadResourceSyncs = React.useCallback(() => {
-    const reload = async () => {
+    const reload = async (id: string) => {
       try {
         setIsLoading(true);
-
-        const rsList = await get<ResourceSyncList>(commonQueries.getResourceSyncsByRepo(repositoryId as string));
+        const rsList = await get<ResourceSyncList>(commonQueries.getResourceSyncsByRepo({ repositoryId: id }));
         setResourceSyncs(rsList.items);
         setRsError(undefined);
       } catch (e) {
@@ -84,7 +86,9 @@ const CreateRepository = () => {
         setIsLoading(false);
       }
     };
-    void reload();
+    if (repositoryId) {
+      void reload(repositoryId);
+    }
   }, [get, repositoryId]);
 
   let content: React.ReactNode;
