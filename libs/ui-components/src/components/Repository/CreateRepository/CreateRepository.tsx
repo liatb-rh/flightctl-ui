@@ -13,6 +13,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 
+
 import { Repository, ResourceSync, ResourceSyncList } from '@flightctl/types';
 
 import { useTranslation } from '../../../hooks/useTranslation';
