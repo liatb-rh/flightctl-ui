@@ -74,7 +74,6 @@ const CreateRepository = () => {
     const reload = async (id: string) => {
       try {
         setIsLoading(true);
-
         const rsList = await get<ResourceSyncList>(commonQueries.getResourceSyncsByRepo({ repositoryId: id }));
         setResourceSyncs(rsList.items);
         setRsError(undefined);
